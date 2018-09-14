@@ -19,8 +19,18 @@ import java.util.concurrent.Executors;
 
 public class HttpUtil {
 
+    //执行线程池
     public static Executor mExecutor = Executors.newFixedThreadPool(1);
 
+    /**
+     * 网络请求执行
+     *
+     * @param url      请求地址
+     * @param method   请求方法
+     * @param params   请求参数
+     * @param heads    请求头
+     * @param callBack 回调
+     */
     public static <T> void execute(String url, String method, String params,
                                    Map<String, String> heads, BaseCallBack<T> callBack) {
 
@@ -60,7 +70,6 @@ public class HttpUtil {
 
             int code = urlConnection.getResponseCode();
             int length = urlConnection.getContentLength();
-            Log.i("aaa", "length:" + length);
 
             Response<T> response = new Response<T>();
             response.setCode(code);

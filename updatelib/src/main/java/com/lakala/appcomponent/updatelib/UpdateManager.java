@@ -7,7 +7,6 @@ import com.lakala.appcomponent.updatelib.manager.HttpManager;
 import com.lakala.appcomponent.updatelib.mode.Response;
 import com.lakala.appcomponent.updatelib.util.Method;
 import com.lakala.appcomponent.updatelib.util.Type;
-import com.lakala.appcomponent.updatelib.util.Utils;
 
 import org.json.JSONObject;
 
@@ -15,12 +14,19 @@ import java.util.Map;
 
 public class UpdateManager {
 
+    /**
+     * 网络请求
+     *
+     * @param build    请求的参数
+     * @param callBack 结果回调
+     */
     public static void requestData(Build build, BaseCallBack callBack) {
         if (build == null) {
             return;
         }
 
-        if ("GET".equals(Utils.getMethod(build.method))) {
+        //get请求
+        if (Method.GET == build.method) {
             HttpManager
                     .get()
                     .url(build.url)
@@ -30,12 +36,13 @@ public class UpdateManager {
                     .execute(callBack);
         } else {
 
-            //预防传递数据是map
-            if (TextUtils.isEmpty(build.content)) {
-                build.content(new JSONObject(build.params).toString());
-            }
-
+            //json请求
             if (Type.JSON == build.type) {
+                //传递数据是map  转成json格式的内容
+                if (TextUtils.isEmpty(build.content)) {
+                    build.content(new JSONObject(build.params).toString());
+                }
+
                 HttpManager
                         .requestString()
                         .url(build.url)
@@ -45,6 +52,7 @@ public class UpdateManager {
                         .build()
                         .execute(callBack);
             } else {
+                //form请求
                 HttpManager
                         .requestForm()
                         .url(build.url)
@@ -57,12 +65,19 @@ public class UpdateManager {
         }
     }
 
+    /**
+     * 网络请求 同步(放在线程中执行)
+     *
+     * @param build 请求的参数
+     * @return 网络结果返回
+     */
     public static Response requestData(Build build) {
         if (build == null) {
             return null;
         }
 
-        if ("GET".equals(Utils.getMethod(build.method))) {
+        //get请求
+        if (Method.GET == build.method) {
             return HttpManager
                     .get()
                     .url(build.url)
@@ -71,10 +86,10 @@ public class UpdateManager {
                     .build()
                     .execute();
         } else {
-
+            //gson请求
             if (Type.JSON == build.type) {
 
-                //预防传递数据是map
+                //传递数据是map  转成json格式的内容
                 if (TextUtils.isEmpty(build.content)) {
                     build.content(new JSONObject(build.params).toString());
                 }
@@ -101,11 +116,17 @@ public class UpdateManager {
     }
 
     public static class Build {
+        //请求类型 json或者form
         Type type;
+        //请求地址
         String url;
+        //请求内容
         String content;
+        //请求方法get post
         Method method;
+        //请求参数
         Map<String, String> params;
+        //请求头
         Map<String, String> heads;
 
         public Build content(String content) {

@@ -13,15 +13,19 @@ public class GetCall extends BaseCall {
 
     private Map<String, String> params;
 
-    public GetCall(String url, Method method, Map<String, String> heads, Map<String, String> params) {
+    public GetCall(String url, Method method, Map<String, String> heads, Map<String, String> param) {
         super(url, method, heads);
-        this.params = params;
+        this.params = param;
 
+        //参数不为空
         if (params != null) {
             appendUrl();
         }
     }
 
+    /**
+     * url后面拼接参数
+     */
     private void appendUrl() {
         Uri.Builder builder = Uri.parse(url).buildUpon();
 
